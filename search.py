@@ -64,59 +64,12 @@ class SearchProblem:
         util.raiseNotDefined()
 
 
-def tinyMazeSearch(problem):
-    """
-    Returns a sequence of moves that solves tinyMaze.  For any other maze, the
-    sequence of moves will be incorrect, so only use this for tinyMaze.
-    """
-    from game import Directions
-    s = Directions.SOUTH
-    w = Directions.WEST
-    return [s, s, w, s, w, w, s, w]
-
-
-def depthFirstSearch(problem):
-    """
-    Search the deepest nodes in the search tree first.
-
-    Your search algorithm needs to return a list of actions that reaches the
-    goal. Make sure to implement a graph search algorithm.
-
-    To get started, you might want to try some of these simple commands to
-    understand the search problem that is being passed in:
-
-    print "Start:", problem.getStartState()
-    print "Is the start a goal?", problem.isGoalState(problem.getStartState())
-    print "Start's successors:", problem.getSuccessors(problem.getStartState())
-    """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
-
-
-def breadthFirstSearch(problem):
-    """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
-
-
-def uniformCostSearch(problem):
-    """Search the node of least total cost first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
-
-
 def nullHeuristic(state, problem=None):
     """
     A heuristic function estimates the cost from the current state to the nearest
     goal in the provided SearchProblem.  This heuristic is trivial.
     """
     return 0
-
-
-def aStarSearch(problem, heuristic=nullHeuristic):
-    """Search the node that has the lowest combined cost and heuristic first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
 
 
 class PriorityQueueLAS:
@@ -200,7 +153,7 @@ def lifeLongAStarSearch(problem, heuristic=nullHeuristic):
         for item in problem.U.heap:
             if item[2][0] == u:
                 problem.U.remove(u)
-        if problem.maze[u]['g'] == problem.maze[u]['rhs']:
+        if problem.maze[u]['g'] != problem.maze[u]['rhs']:
             key = calculateKey(u)
             problem.U.Insert((u, key), key)
 
@@ -218,13 +171,10 @@ def lifeLongAStarSearch(problem, heuristic=nullHeuristic):
                 for successor in problem.getSuccessors(u):
                     updateVertex(successor[0])
 
-    def main():
         initialize()
-        while True:
-            computeShortestPath()
-            changes = input("Make changes in edge cost")
-            for change in changes:
-                updateVertex(, openList)
+        computeShortestPath()
+        for change in changes:
+            updateVertex()
 
         # Initialize(); forever
         # ComputeShortestPath();
@@ -234,8 +184,4 @@ def lifeLongAStarSearch(problem, heuristic=nullHeuristic):
 
 
 # Abbreviations
-bfs = breadthFirstSearch
-dfs = depthFirstSearch
-astar = aStarSearch
-ucs = uniformCostSearch
 las = lifeLongAStarSearch
