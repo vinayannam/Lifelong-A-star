@@ -19,6 +19,7 @@ Pacman agents (in searchAgents.py).
 
 import util
 import heapq
+from game import Directions
 
 
 class SearchProblem:
@@ -71,23 +72,22 @@ def nullHeuristic(state, problem=None):
     """
     return 0
 
+# the item in the priorityQ
+
 
 class PriorityQueueLAS:
-    def __init__(self):
+
+    def  __init__(self):
         self.heap = []
         self.count = 0
 
     def top(self):
-        if self.isEmpty():
-            return None
-        (_, _, item) = self.heap[0]
-        return item[0]
+        return self.heap[0]
 
     def topKey(self):
         if self.isEmpty():
             return (float('inf'), float('inf'))
-        (_, _, item) = self.heap[0]
-        return item[1]
+        return self.heap[0][0]
 
     def insert(self, item, priority):
         entry = (priority, self.count, item)
@@ -96,7 +96,7 @@ class PriorityQueueLAS:
 
     def pop(self):
         (_, _, item) = heapq.heappop(self.heap)
-        return item[0]
+        return item
 
     def isEmpty(self):
         return len(self.heap) == 0
@@ -114,74 +114,111 @@ class PriorityQueueLAS:
             self.insert(item, priority)
 
     def remove(self, state):
-        for index, item in enumerate(self.heap):
-            if item[2][0] == state:
-                del self.heap[index]
-                heapq.heapify(self.heap)
-                break
+        self.update(state, float('-inf'))
+        a = self.pop()
 
-
-def lifeLongAStarSearch(problem, heuristic=nullHeuristic):
-    """Life Long A * Search"""
-    "*** YOUR CODE HERE ***"
+def lifeLongAStarSearch(problem, heuristic):
 
     def calculateKey(state):
-        g_rhs = min(problem.maze[state]['g'], problem.maze[state]['rhs'])
-        return (g_rhs + heuristic(state, problem.goal), g_rhs)
+        g_rhs = min(problem.g[state], problem.rhs[state])
+        return (g_rhs + heuristic(state, problem), g_rhs)
 
     def initialize():
-        problem.height = problem.walls.height
-        problem.width = problem.walls.width
-        problem.maze = {}
-        for x in range(problem.height):
-            for y in range(problem.width):
-                problem.maze[(x, y)] = {'g': float('inf'), 'rhs': float('inf')}
-        problem.maze[problem.startState]['g'] = float('inf')
-        problem.maze[problem.startState]['rhs'] = 0.0
-        problem.maze[problem.goal]['g'] = float('inf')
-        problem.maze[problem.goal]['rhs'] = float('inf')
-        problem.U = PriorityQueueLAS()
-        key = calculateKey(problem.getStartState())
-        problem.U.insert((problem.getStartState(), key), key[0]+key[1])
+        for state in problem.getStates():
+            problem.rhs[state] = float('inf')
+            problem.g[state] = float('inf')
+        problem.rhs[problem.dynamicStartState] = 0
+        problem.U.insert(problem.dynamicStartState, calculateKey(problem.dynamicStartState))
 
     def updateVertex(u):
-        if u != problem.getStartState():
-            prevKeys = []
-            for successor in problem.getSuccessors(u):
-                prevKeys.append(problem.maze[successor[0]]['g']+successor[2])
-            problem.maze[u]['rhs'] = min(prevKeys)
-        for item in problem.U.heap:
-            if item[2][0] == u:
-                problem.U.remove(u)
-        if problem.maze[u]['g'] != problem.maze[u]['rhs']:
-            key = calculateKey(u)
-            problem.U.Insert((u, key), key)
+        if u != problem.dynamicStartState:
+            prevKeys = [float('inf')]
+            for successor, _, cost in problem.getSuccessors(u):
+                prevKeys.append(problem.g[successor]+cost)
+            problem.rhs[u] = min(prevKeys)
+        problem.U.remove(u)
+        if problem.g[u] != problem.rhs[u]:
+            problem.U.insert(u, calculateKey(u))
 
     def computeShortestPath():
-        goal = problem.maze[problem.goal]
-        while problem.U.topKey() < calculateKey(problem.goal) or goal['rhs'] != goal['g']:
+        goal = problem.getGoalState()
+        while problem.U.topKey() < calculateKey(goal) or problem.rhs[goal] != problem.g[goal]:
             u = problem.U.pop()
-            if problem.maze[u]['g'] > problem.maze[u]['rhs']:
-                problem.maze[u]['g'] = problem.maze[u]['rhs']
-                for successor in problem.getSuccessors(u):
-                    updateVertex(successor[0])
+            if problem.g[u] > problem.rhs[u]:
+                problem.g[u] = problem.rhs[u]
+                for successor, _, _ in problem.getSuccessors(u):
+                    updateVertex(successor)
             else:
-                problem.maze[u]['g'] = float('inf')
+                problem.g[u] = float('inf')
                 updateVertex(u)
-                for successor in problem.getSuccessors(u):
-                    updateVertex(successor[0])
+                for successor, _, _ in problem.getSuccessors(u):
+                    updateVertex(successor)
+    
+    def shortestPath():
+        path = []
+        state = problem.getGoalState()
+        path.append(state)
+        while state != problem.dynamicStartState:
+            minimum = float('inf')
+            for successor, _, _ in problem.getSuccessors(state):
+                if minimum > problem.g[successor]:
+                    minimum = problem.g[successor]
+                    state = successor
+            path.append(state)
+        return path[::-1]
 
+    def main():
+        problem.U = PriorityQueueLAS()
+        problem.g = {}
+        problem.rhs = {}
+        problem.finalPath = []
+        problem.dynamicStartState = problem.getStartState()
         initialize()
-        computeShortestPath()
-        for change in changes:
-            updateVertex()
+        pseudoPath = []
+        stop = False
+        while (problem.dynamicStartState != problem.getGoalState())  and not stop:
+            initialize()
+            computeShortestPath()
+            path = shortestPath()
+            print "Path: "
+            print problem.getGoalState()
+            if len(path) == 1 and path[0][0] == problem.getGoalState(): 
+                break
+            for index in range(len(path)-1):
+                currentState = path[index]
+                nextState = path[index+1]
+                pseudoPath.append(currentState)
+                problem.finalPath.append(currentState)
+                print "-->" + str(nextState)
+                if problem.isObstacle(nextState):
+                    pseudoPath = []
+                    print "Obstacle @ "+ str(nextState)
+                    print "Replanning..."
+                    problem.insertObstacle(nextState)
+                    updateVertex(nextState)
+                    problem.dynamicStartState = currentState
+                    break
+                elif nextState == problem.getGoalState():
+                    stop = True
+                    break
+        problem.finalPath.append(problem.getGoalState())
+        print "Done Planning"
+        actions = []
+        for index in range(len(problem.finalPath)-1):
+            x, y = problem.finalPath[index]
+            nextX, nextY = problem.finalPath[index+1]
+            if x > nextX:
+                actions.append(Directions.WEST)
+            if x<nextX:
+                actions.append(Directions.EAST)
+            if y<nextY:
+                actions.append(Directions.NORTH)
+            if y>nextY:
+                actions.append(Directions.SOUTH)
+        print(actions)
+        return actions
 
-        # Initialize(); forever
-        # ComputeShortestPath();
-        # Wait for changes in edge costs;
-        # for all directed edges (u, v) with changed edge costs
-        # Update the edge cost c(u, v); UpdateVertex(v);
+    return main()
 
-
-# Abbreviations
+ # Abbreviations
 las = lifeLongAStarSearch

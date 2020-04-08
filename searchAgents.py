@@ -582,6 +582,8 @@ def mazeDistance(point1, point2, gameState):
     return len(search.bfs(prob))
 
 
+# our implementation
+
 class LifeLongAStarPositionSearchProblem(search.SearchProblem):
     """
     Life Long A * search Problem
@@ -593,21 +595,25 @@ class LifeLongAStarPositionSearchProblem(search.SearchProblem):
         self.startState = gameState.getPacmanPosition()
         if start != None:
             self.startState = start
-        self.goal = goal
         self.costFn = costFn
         self.visualize = visualize
         if warn and (gameState.getNumFood() != 1 or not gameState.hasFood(*goal)):
             print 'Warning: this does not look like a regular search maze'
-
         # For display purposes
         self._visited, self._visitedlist, self._expanded = {}, [], 0  # DO NOT CHANGE
+
+        # changes
+        self.obstacles = set()
+        self.gameState = gameState
+        self.goal = gameState.getFood().asList()[0]
+        self.width = self.walls.width
+        self.height = self.walls.height
 
     def getStartState(self):
         return self.startState
 
     def isGoalState(self, state):
         isGoal = state == self.goal
-
         # For display purposes only
         if isGoal and self.visualize:
             self._visitedlist.append(state)
@@ -617,31 +623,9 @@ class LifeLongAStarPositionSearchProblem(search.SearchProblem):
                 if 'drawExpandedCells' in dir(__main__._display):
                     __main__._display.drawExpandedCells(
                         self._visitedlist)  # @UndefinedVariable
-
         return isGoal
 
-    def getSuccessors(self, state):
-
-        successors = []
-        for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
-            x, y = state
-            dx, dy = Actions.directionToVector(action)
-            nextx, nexty = int(x + dx), int(y + dy)
-            if not self.walls[nextx][nexty]:
-                nextState = (nextx, nexty)
-                cost = self.costFn(nextState)
-                successors.append((nextState, action, cost))
-
-        # Bookkeeping for display purposes
-        self._expanded += 1  # DO NOT CHANGE
-        if state not in self._visited:
-            self._visited[state] = True
-            self._visitedlist.append(state)
-
-        return successors
-
     def getCostOfActions(self, actions):
-
         if actions == None:
             return 999999
         x, y = self.getStartState()
@@ -653,3 +637,53 @@ class LifeLongAStarPositionSearchProblem(search.SearchProblem):
                 return 999999
             cost += self.costFn((x, y))
         return cost
+
+    # New functions
+
+    def getGoalState(self):
+        return self.goal
+
+    def cost(self, startState, goalState):
+        if startState in self.obstacles or goalState in self.obstacles:
+            return float('inf')
+        return 1
+
+    def isObstacle(self, state):
+        if state in self.walls.asList():
+            return True
+        return False
+
+    def isBoundary(self, state):
+        x, y = state
+        if x == 0 or x == self.height-1 or y == 0 or y == self.width-1:
+            return True
+        else:
+            return False
+
+    def insertObstacle(self, obstacle):
+        self.obstacles.add(obstacle)
+
+    def getStates(self):
+        states = []
+        for x in range(1, self.width):
+            for y in range(1, self.height):
+                states.append((x, y))
+        return states
+
+    def getSuccessors(self, state):
+        successors = []
+        for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
+            x, y = state
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            nextState = (nextx, nexty)
+            if not self.isBoundary(nextState):
+                cost = self.cost(state, nextState)
+                successors.append((nextState, action, cost))
+        # Bookkeeping for display purposes
+        self._expanded += 1  # DO NOT CHANGE
+        if state not in self._visited:
+            self._visited[state] = True
+            self._visitedlist.append(state)
+        return successors
+    
