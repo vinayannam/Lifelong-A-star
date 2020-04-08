@@ -428,6 +428,20 @@ class PacmanGraphics:
         y = (self.height  - y)*self.gridSize
         return ( x, y )
 
+    def drawObstacles(self, obstacles):
+        obstacleColor = formatColor(100.0/255.0, 255.0/255.0, 100.0/255.0)
+        self.expandedObstacles = []
+        for i, obstacle in enumerate(obstacles):
+            screen = self.to_screen(obstacle)
+            cellColor = obstacleColor
+            cell = rectangle(screen,
+                         0.25*self.gridSize,
+                         color = cellColor,
+                         filled = 1, behind=4)
+            self.expandedObstacles.append(cell)
+            if self.frameTime < 0:
+                refresh()
+
     def drawWalls(self, wallMatrix):
         wallColor = WALL_COLOR
         for xNum, x in enumerate(wallMatrix):

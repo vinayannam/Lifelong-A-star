@@ -655,7 +655,7 @@ class LifeLongAStarPositionSearchProblem(search.SearchProblem):
 
     def isBoundary(self, state):
         x, y = state
-        if x == 0 or x == self.height-1 or y == 0 or y == self.width-1:
+        if x == 0 or x == self.width-1 or y == 0 or y == self.height-1:
             return True
         else:
             return False
@@ -686,4 +686,12 @@ class LifeLongAStarPositionSearchProblem(search.SearchProblem):
             self._visited[state] = True
             self._visitedlist.append(state)
         return successors
+
+    def printPath(self,path):
+        import __main__
+        __main__._display.drawExpandedCells(path)
+
+    def drawObstacles(self):
+        import __main__
+        __main__._display.drawObstacles(list(self.obstacles))
     

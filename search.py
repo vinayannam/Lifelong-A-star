@@ -18,9 +18,8 @@ Pacman agents (in searchAgents.py).
 """
 
 import util
-import heapq
-from game import Directions
-
+from game import Actions
+from util import PriorityQueueLAS, PriorityQueueWithFunction
 
 class SearchProblem:
     """
@@ -74,49 +73,6 @@ def nullHeuristic(state, problem=None):
 
 # the item in the priorityQ
 
-
-class PriorityQueueLAS:
-
-    def  __init__(self):
-        self.heap = []
-        self.count = 0
-
-    def top(self):
-        return self.heap[0]
-
-    def topKey(self):
-        if self.isEmpty():
-            return (float('inf'), float('inf'))
-        return self.heap[0][0]
-
-    def insert(self, item, priority):
-        entry = (priority, self.count, item)
-        heapq.heappush(self.heap, entry)
-        self.count += 1
-
-    def pop(self):
-        (_, _, item) = heapq.heappop(self.heap)
-        return item
-
-    def isEmpty(self):
-        return len(self.heap) == 0
-
-    def update(self, item, priority):
-        for index, (p, c, i) in enumerate(self.heap):
-            if i == item:
-                if p <= priority:
-                    break
-                del self.heap[index]
-                self.heap.append((priority, c, item))
-                heapq.heapify(self.heap)
-                break
-        else:
-            self.insert(item, priority)
-
-    def remove(self, state):
-        self.update(state, float('-inf'))
-        a = self.pop()
-
 def lifeLongAStarSearch(problem, heuristic):
 
     def calculateKey(state):
@@ -156,16 +112,37 @@ def lifeLongAStarSearch(problem, heuristic):
     
     def shortestPath():
         path = []
-        state = problem.getGoalState()
+        state = (problem.getGoalState(), None)
         path.append(state)
-        while state != problem.dynamicStartState:
+        while state[0] != problem.dynamicStartState:
             minimum = float('inf')
-            for successor, _, _ in problem.getSuccessors(state):
+            for successor, action, _ in problem.getSuccessors(state[0]):
                 if minimum > problem.g[successor]:
                     minimum = problem.g[successor]
-                    state = successor
+                    state = (successor, Actions.reverseDirection(action))
             path.append(state)
         return path[::-1]
+
+    def planning(pseudoPath):
+        path = shortestPath()
+        if len(path) == 1 and path[0][0] == problem.getGoalState(): 
+            return pseudoPath, True
+        for index in range(len(path)-1):
+            currentState, currentAction = path[index]
+            nextState, _ = path[index+1]
+            pseudoPath.append(currentState)
+            problem.finalPath.append((currentState, currentAction))
+            print "--> " + str(nextState),
+            if problem.isObstacle(nextState):
+                pseudoPath = []
+                print "\nObstacle @ "+ str(nextState)
+                print "Replanning..."
+                problem.insertObstacle(nextState)
+                updateVertex(nextState)
+                problem.dynamicStartState = currentState
+                return pseudoPath, False
+            elif nextState == problem.getGoalState():
+                return pseudoPath, True
 
     def main():
         problem.U = PriorityQueueLAS()
@@ -176,49 +153,56 @@ def lifeLongAStarSearch(problem, heuristic):
         initialize()
         pseudoPath = []
         stop = False
+        print 'The goal position is', problem.getGoalState()
+        print "The path is: "
+        print problem.dynamicStartState, 
         while (problem.dynamicStartState != problem.getGoalState())  and not stop:
             initialize()
             computeShortestPath()
-            path = shortestPath()
-            print "Path: "
-            print problem.getGoalState()
-            if len(path) == 1 and path[0][0] == problem.getGoalState(): 
-                break
-            for index in range(len(path)-1):
-                currentState = path[index]
-                nextState = path[index+1]
-                pseudoPath.append(currentState)
-                problem.finalPath.append(currentState)
-                print "-->" + str(nextState)
-                if problem.isObstacle(nextState):
-                    pseudoPath = []
-                    print "Obstacle @ "+ str(nextState)
-                    print "Replanning..."
-                    problem.insertObstacle(nextState)
-                    updateVertex(nextState)
-                    problem.dynamicStartState = currentState
-                    break
-                elif nextState == problem.getGoalState():
-                    stop = True
-                    break
-        problem.finalPath.append(problem.getGoalState())
-        print "Done Planning"
+            pseudoPath, stop = planning(pseudoPath)  
+        problem.finalPath.append((problem.getGoalState(), None))
+        print "\nDone Planning"
         actions = []
-        for index in range(len(problem.finalPath)-1):
-            x, y = problem.finalPath[index]
-            nextX, nextY = problem.finalPath[index+1]
-            if x > nextX:
-                actions.append(Directions.WEST)
-            if x<nextX:
-                actions.append(Directions.EAST)
-            if y<nextY:
-                actions.append(Directions.NORTH)
-            if y>nextY:
-                actions.append(Directions.SOUTH)
-        print(actions)
+        states = []
+        for index in range(len(problem.finalPath[:-1])):
+            currentState, currentAction = problem.finalPath[index]
+            nextState, _ = problem.finalPath[index+1]
+            if currentState != nextState:
+                actions.append(currentAction)
+                states.append(currentState)
+        problem.drawObstacles()
+        problem.printPath(states)
         return actions
 
     return main()
 
+def aStarSearch(problem, heuristic):
+    def priorityFunction(node):
+        state, actions_sequence, path_cost = node
+        heuristic_cost = heuristic(state, problem)
+        return path_cost+heuristic_cost
+    frontier = PriorityQueueWithFunction(priorityFunction)
+    return commonSearch(frontier, problem)
+
+def commonSearch(frontier, problem):
+    root = problem.getStartState()
+    explored_set = set()
+    actions_sequence = list()
+    path_cost = 0
+    frontier.push((root, actions_sequence, path_cost))
+    while not frontier.isEmpty():
+        parent, actions_sequence, path_cost = frontier.pop()
+        if parent not in explored_set:
+            if problem.isGoalState(parent):
+                return actions_sequence
+            explored_set.add(parent)
+            for successor in problem.getSuccessors(parent):
+                state, action, step_cost = successor
+                new_actions_sequence = actions_sequence[:]
+                new_actions_sequence += [action]
+                cost = path_cost+step_cost
+                frontier.push((state, new_actions_sequence, cost))
+
  # Abbreviations
 las = lifeLongAStarSearch
+astar = aStarSearch
