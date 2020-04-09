@@ -71,21 +71,20 @@ def nullHeuristic(state, problem=None):
     """
     return 0
 
-# the item in the priorityQ
-
+# The life long A* search implementation
 def lifeLongAStarSearch(problem, heuristic):
-
+    # function directly implemented from the paper   
     def calculateKey(state):
         g_rhs = min(problem.g[state], problem.rhs[state])
         return (g_rhs + heuristic(state, problem), g_rhs)
-
+    # function directly implemented from the paper   
     def initialize():
         for state in problem.getStates():
             problem.rhs[state] = float('inf')
             problem.g[state] = float('inf')
         problem.rhs[problem.dynamicStartState] = 0
         problem.U.insert(problem.dynamicStartState, calculateKey(problem.dynamicStartState))
-
+    # function directly implemented from the paper   
     def updateVertex(u):
         if u != problem.dynamicStartState:
             prevKeys = [float('inf')]
@@ -95,13 +94,14 @@ def lifeLongAStarSearch(problem, heuristic):
         problem.U.remove(u)
         if problem.g[u] != problem.rhs[u]:
             problem.U.insert(u, calculateKey(u))
-
+    # function directly implemented from the paper   
     def computeShortestPath():
         goal = problem.getGoalState()
         while problem.U.topKey() < calculateKey(goal) or problem.rhs[goal] != problem.g[goal]:
             u = problem.U.pop()
             if problem.g[u] > problem.rhs[u]:
                 problem.g[u] = problem.rhs[u]
+                # the successor function produces a tuple of state, action, cost values
                 for successor, _, _ in problem.getSuccessors(u):
                     updateVertex(successor)
             else:
@@ -109,7 +109,9 @@ def lifeLongAStarSearch(problem, heuristic):
                 updateVertex(u)
                 for successor, _, _ in problem.getSuccessors(u):
                     updateVertex(successor)
-    
+    # After computing the shortest path the g values are updated.
+    # From goal to start we will follow the least g value among 
+    # the successors and get the shortest path. 
     def shortestPath():
         path = []
         state = (problem.getGoalState(), None)
@@ -119,8 +121,10 @@ def lifeLongAStarSearch(problem, heuristic):
             for successor, action, _ in problem.getSuccessors(state[0]):
                 if minimum > problem.g[successor]:
                     minimum = problem.g[successor]
+                    # since we are going in reverse direction, we need to reverse the actions.
                     state = (successor, Actions.reverseDirection(action))
             path.append(state)
+        # reversing the direction path from start to goal
         return path[::-1]
 
     def planning():

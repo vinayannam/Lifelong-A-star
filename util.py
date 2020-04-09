@@ -222,7 +222,7 @@ class PriorityQueueWithFunction(PriorityQueue):
         "Adds an item to the queue with priority from the priority function"
         PriorityQueue.push(self, item, self.priorityFunction(item))
 
-
+# Priority Queue implimetation as specified in the paper for Life Long A star
 class PriorityQueueLAS:
 
     def  __init__(self):
