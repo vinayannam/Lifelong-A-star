@@ -179,11 +179,6 @@ def square(pos, r, color, filled=1, behind=0):
     coords = [(x - r, y - r), (x + r, y - r), (x + r, y + r), (x - r, y + r)]
     return polygon(coords, color, color, filled, 0, behind=behind)
 
-def rectangle(pos, r, color, filled=1, behind=0):
-    x, y = pos
-    coords = [(x - r, y - r/2), (x + r/2, y - r), (x + r, y + r/2), (x - r/2, y + r/2)]
-    return polygon(coords, color, color, filled, 0, behind=behind)
-
 def circle(pos, r, outlineColor, fillColor, endpoints=None, style='pieslice', width=2):
     x, y = pos
     x0, x1 = x - r - 1, x + r

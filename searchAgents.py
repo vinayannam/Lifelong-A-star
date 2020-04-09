@@ -75,7 +75,7 @@ class SearchAgent(Agent):
     Note: You should NOT change any code in SearchAgent
     """
 
-    def __init__(self, fn='lifeLongAStarSearch', prob='LifeLongAStarPositionSearchProblem', heuristic='manhattanHeuristic'):
+    def __init__(self, fn='lifeLongAStarSearch', prob='AStarPositionSearchProblem', heuristic='manhattanHeuristic'):
         # Warning: some advanced Python magic is employed below to find the right functions and problems
 
         # Get the search function from the name and heuristic
@@ -584,7 +584,7 @@ def mazeDistance(point1, point2, gameState):
 
 # our implementation
 
-class LifeLongAStarPositionSearchProblem(search.SearchProblem):
+class AStarPositionSearchProblem(search.SearchProblem):
     """
     Life Long A * search Problem
     """

@@ -434,10 +434,10 @@ class PacmanGraphics:
         for i, obstacle in enumerate(obstacles):
             screen = self.to_screen(obstacle)
             cellColor = obstacleColor
-            cell = rectangle(screen,
-                         0.25*self.gridSize,
+            cell = square(screen,
+                         0.5*self.gridSize,
                          color = cellColor,
-                         filled = 1, behind=4)
+                         filled = 0, behind=0)
             self.expandedObstacles.append(cell)
             if self.frameTime < 0:
                 refresh()
