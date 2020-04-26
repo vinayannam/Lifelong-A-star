@@ -1,7 +1,7 @@
 # Cybot (Team Project 2 : DLite * Search)
 
 ## Command
-> python pacman.py -l <LAYOUT> -z .5 -p SearchAgent -a fn=<SEARCH_ALGORITHM>
+> python pacman.py -l **LAYOUT** -z .5 -p SearchAgent -a fn=**SEARCH_ALGORITHM**
 
 ## LAYOUT (Layouts Available)
 > - masterplan
