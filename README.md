@@ -16,7 +16,7 @@ In this project we implemented the “D* Lite”, Sven Koenig and Maxim Likhache
 3. The `pacman.py` uses the search agents from the `SearchAgent.py` file.
 4. The basic command to play with the pacman in the pacman domain is 
 > python pacman.py
-5. To the pacman we need to specify the layout (using the -l flag) and the agent type (using the -p flag).
+5. To the pacman we need to specify the layout (using the `-l` flag) and the agent type (using the `-p` flag).
 6. The search agent we use is the `AStarPositionSearchProblem` that requires all the helper methods and properties to implement the A* searching algorithms in the paper.
 7. So the command used to run the algorithms is
 > python pacman.py -l **LAYOUT** -z .5 -p SearchAgent -a fn=**SEARCH_ALGORITHM**
@@ -38,4 +38,4 @@ In this project we implemented the “D* Lite”, Sven Koenig and Maxim Likhache
 > - dstar : The DLite* search implementation
 
 ## Example usage of the command:
-> python pacman.py -l masterplan-z .5 -p SearchAgent -a fn=astar
+> python pacman.py -l masterplan -z .5 -p SearchAgent -a fn=astar
