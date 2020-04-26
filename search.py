@@ -71,8 +71,9 @@ def nullHeuristic(state, problem=None):
     """
     return 0
 
+# Dynamic A* search algorithm
 def aStarSearch(problem, heuristic):
-
+    # this is the normal astar search primer function that initializes the frontier
     def aStarPath():
         def priorityFunction(node):
             state, actions_sequence, path_cost = node
@@ -80,8 +81,9 @@ def aStarSearch(problem, heuristic):
             return path_cost+heuristic_cost
         frontier = PriorityQueueWithFunction(priorityFunction)
         return commonSearch(frontier)
-
+    # planning implementation with a generic frontier
     def commonSearch(frontier):
+        # as the start location changes every time an obstacle is found, using a dynamic start state class variable
         root = problem.dynamicStartState
         explored_set = set()
         actions_sequence = list()
@@ -101,6 +103,7 @@ def aStarSearch(problem, heuristic):
                     frontier.push((state, new_actions_sequence, cost))
 
     def planning():
+        # generate path
         path = aStarPath()
         if len(path) == 1 and path[0][0] == problem.getGoalState(): 
             return True
@@ -109,10 +112,12 @@ def aStarSearch(problem, heuristic):
             nextState, _ = path[index+1]
             problem.finalPath.append((currentState, currentAction))
             print "--> " + str(nextState),
+            # found an obstacle
             if problem.isObstacle(nextState):
                 print "\nObstacle @ "+ str(nextState)
                 print "Replanning..."
                 problem.insertObstacle(nextState)
+                # update the new start state
                 problem.dynamicStartState = currentState
                 return False
             elif nextState == problem.getGoalState():
@@ -125,6 +130,7 @@ def aStarSearch(problem, heuristic):
         print 'The goal position is', problem.getGoalState()
         print "The path is: "
         print problem.dynamicStartState, 
+        # do planning till the pacman reach the goal state.
         while (problem.dynamicStartState != problem.getGoalState())  and not stop:
             stop = planning()  
         problem.finalPath.append((problem.getGoalState(), None))
@@ -225,6 +231,7 @@ def lifeLongAStarSearch(problem, heuristic):
                 return True
 
     def main():
+        # initializing 
         problem.U = PriorityQueueLAS()
         problem.g = {}
         problem.rhs = {}
