@@ -1,6 +1,24 @@
-# Cybot (Team Project 2 : DLite * Search)
+# Team: Cybot (Team Project Topic 2)
+In this project we implemented the “D* Lite”, Sven Koenig and Maxim Likhachev, AAAI 2002,and integrated into the Pacman domain for path-finding problems (from start to a fixed goal location).
 
-## Command
+## Authors and Contributions:
+> - Setu Durgesh Vinay Annam
+> - Rishti Gupta
+> - Satrajit Maitra
+> - Hsin-Jung Lee
+
+
+## Run the project
+1. Download the project from the git repository using the command below. 
+> git clone https://github.com/vinayannam/Lifelong-A-star.git
+> Make sure that the Python version to run the project is Python 2.7. If you have python3 installed in your PC by default and do not wish to change it to python 2.7 you may create a virtual environment with python 2.7 which will not disrupt any existing project or dependencies.
+2. Navigate to the directory (using `cd directory_name`)
+3. The `pacman.py` uses the search agents from the `SearchAgent.py` file.
+4. The basic command to play with the pacman in the pacman domain is 
+> python pacman.py
+5. To the pacman we need to specify the layout (using the -l flag) and the agent type (using the -p flag).
+6. The search agent we use is the `AStarPositionSearchProblem` that requires all the helper methods and properties to implement the A* searching algorithms in the paper.
+7. So the command used to run the algorithms is
 > python pacman.py -l **LAYOUT** -z .5 -p SearchAgent -a fn=**SEARCH_ALGORITHM**
 
 ## LAYOUT (Layouts Available)
@@ -21,9 +39,3 @@
 
 ## Example usage of the command:
 > python pacman.py -l masterplan-z .5 -p SearchAgent -a fn=astar
-
-## Authors:
-> - Rishti Gupta
-> - Setu Durgesh Vinay Annam
-> - Satrajit Maitra
-> - Hsin-Jung Lee
