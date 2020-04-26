@@ -146,10 +146,12 @@ def aStarSearch(problem, heuristic):
 
 # The life long A* search implementation
 def lifeLongAStarSearch(problem, heuristic):
+    
     # function directly implemented from the paper   
     def calculateKey(state):
         g_rhs = min(problem.g[state], problem.rhs[state])
         return (g_rhs + heuristic(state, problem), g_rhs)
+    
     # function directly implemented from the paper   
     def initialize():
         for state in problem.getStates():
@@ -157,6 +159,7 @@ def lifeLongAStarSearch(problem, heuristic):
             problem.g[state] = float('inf')
         problem.rhs[problem.dynamicStartState] = 0
         problem.U.insert(problem.dynamicStartState, calculateKey(problem.dynamicStartState))
+    
     # function directly implemented from the paper   
     def updateVertex(u):
         if u != problem.dynamicStartState:
@@ -167,6 +170,7 @@ def lifeLongAStarSearch(problem, heuristic):
         problem.U.remove(u)
         if problem.g[u] != problem.rhs[u]:
             problem.U.insert(u, calculateKey(u))
+    
     # function directly implemented from the paper   
     def computeShortestPath():
         goal = problem.getGoalState()
@@ -182,6 +186,7 @@ def lifeLongAStarSearch(problem, heuristic):
                 updateVertex(u)
                 for successor, _, _ in problem.getSuccessors(u):
                     updateVertex(successor)
+    
     # After computing the shortest path the g values are updated.
     # From goal to start we will follow the least g value among 
     # the successors and get the shortest path. 
@@ -251,10 +256,12 @@ def lifeLongAStarSearch(problem, heuristic):
     return main()
 
 def dStarSearch(problem, heuristic):
+    
     # function directly implemented from the paper   
     def calculateKey(state):
         g_rhs = min(problem.g[state], problem.rhs[state])
         return (g_rhs + manhattanDistance(state, problem.s['start']) + problem.k['m'], g_rhs)
+    
     # function directly implemented from the paper   
     def initialize():
         problem.U = PriorityQueueLAS()
@@ -270,6 +277,7 @@ def dStarSearch(problem, heuristic):
             problem.g[state] = float('inf')
         problem.rhs[problem.s['goal']] = 0
         problem.U.insert(problem.s['goal'], calculateKey(problem.s['goal']))
+    
     # function directly implemented from the paper   
     def updateVertex(u):
         if u != problem.s['goal']:
@@ -280,6 +288,7 @@ def dStarSearch(problem, heuristic):
         problem.U.remove(u)
         if problem.g[u] != problem.rhs[u]:
             problem.U.insert(u, calculateKey(u))
+    
     # function directly implemented from the paper   
     def computeShortestPath():
         while problem.rhs[problem.s['start']] != problem.g[problem.s['start']] or problem.U.topKey() < calculateKey(problem.s['start']):
