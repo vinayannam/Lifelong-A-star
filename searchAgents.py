@@ -590,7 +590,6 @@ class AStarPositionSearchProblem(search.SearchProblem):
     """
     A * search Problem
     """
-
     def __init__(self, gameState, costFn=lambda x: 1, goal=(1, 1), start=None, warn=True, visualize=True):
 
         self.walls = gameState.getWalls()
@@ -614,6 +613,9 @@ class AStarPositionSearchProblem(search.SearchProblem):
         #  The width and height define the bounds of the layout
         self.width = self.walls.width
         self.height = self.walls.height
+        self.visitedCells = {}
+        for state in self.getStates():
+            self.visitedCells[state] = False
 
     def getStartState(self):
         return self.startState
@@ -697,6 +699,25 @@ class AStarPositionSearchProblem(search.SearchProblem):
         if state not in self._visited:
             self._visited[state] = True
             self._visitedlist.append(state)
+        return successors
+    def getVisitedSuccessors(self, state):
+        successors = []
+        for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
+            x, y = state
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            nextState = (nextx, nexty)
+            # instead of checking the walls, we are only checking the boundaries
+            if not self.isBoundary(nextState):
+                cost = self.cost(state, nextState)
+                successors.append((nextState, action, cost))
+        # Bookkeeping for display purposes
+        if not self.visitedCells[state]:
+            self._expanded += 1  # DO NOT CHANGE
+            if state not in self._visited:
+                self._visited[state] = True
+                self._visitedlist.append(state)
+        self.visitedCells[state] = True
         return successors
     # Visualize the expanded nodes path. Red -> Grey Transition
     def printPath(self,path):
