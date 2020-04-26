@@ -9,9 +9,10 @@ In this project we implemented the “D* Lite”, Sven Koenig and Maxim Likhache
 
 
 ## Run the project
+> Make sure that the Python version to run the project is Python 2.7. If you have python3 installed in your PC by default and do not wish to change it to python 2.
 1. Download the project from the git repository using the command below. 
 > git clone https://github.com/vinayannam/Lifelong-A-star.git
-> Make sure that the Python version to run the project is Python 2.7. If you have python3 installed in your PC by default and do not wish to change it to python 2.7 you may create a virtual environment with python 2.7 which will not disrupt any existing project or dependencies.
+7 you may create a virtual environment with python 2.7 which will not disrupt any existing project or dependencies.
 2. Navigate to the directory (using `cd directory_name`)
 3. The `pacman.py` uses the search agents from the `SearchAgent.py` file.
 4. The basic command to play with the pacman in the pacman domain is 
