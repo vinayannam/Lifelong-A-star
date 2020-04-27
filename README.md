@@ -2,10 +2,10 @@
 In this project we implemented the “D* Lite”, Sven Koenig and Maxim Likhachev, AAAI 2002,and integrated into the Pacman domain for path-finding problems (from start to a fixed goal location).
 
 ## Authors and Contributions:
-> - Setu Durgesh Vinay Annam
-> - Rishti Gupta
-> - Satrajit Maitra
-> - Hsin-Jung Lee
+> - Setu Durgesh Vinay Annam: Implementation of A* search, Lifelong planning A* search, D* Lite, Looking for online periodic, journals, and public resources to inspire the brain storm and make contribution the project
+> - Rishti Gupta: Implementation of A* search, Lifelong planning A* search, D* Lite, Looking for online periodic, journals, and public resources to inspire the brain storm and make contribution the project
+> - Satrajit Maitra: Abstract, Introduction, Implementation comparison, technical approach, using pacman domain in the A* search, Lifelong planning A* search, D* Lite , comparing the performance of lifelong planning A* search and D* Lite sections of Final Report, Looking for online periodic, journals, and public resources to inspire the brain storm and make contribution the project
+> - Hsin-Jung Lee: Abstract, Introduction, Implementation comparison, technical approach, using pacman domain in the A* search, Lifelong planning A* search, D* Lite , comparing the performance of lifelong planning A* search and D* Lite sections of Final Report, Looking for online periodic, journals, and public resources to inspire the brain storm and make contribution the project
 
 
 ## Run the project
@@ -39,9 +39,3 @@ In this project we implemented the “D* Lite”, Sven Koenig and Maxim Likhache
 
 ## Example usage of the command:
 > python pacman.py -l masterplan -z .5 -p SearchAgent -a fn=astar
-
-## Contributions:
-1. Implementation of A* search, Lifelong planning A* search, D* Lite: Setu Durgesh Vinay Annam, Rishti Gupta
-2. Abstract, Introduction, Implementation comparison, technical approach, using pacman domain in the A* search, Lifelong planning A* search, D* Lite , comparing the performance of lifelong planning A* search and D* Lite sections of Final Report: Satrajit Maitra, Hsin-Jung Lee
-3. Looking for online periodic, journals, and public resources to inspire the brain storm and make contribution the project: Setu Durgesh Vinay Annam, Rishti Gupta, Satrajit Maitra, Hsin-Jung Lee
-4. Communicating through numerous hours phone, Zoom, Whatsup text, voice, and video conversation to hurdle the obstacles, bugs, clarify the misunderstanding and concepts: Setu Durgesh Vinay Annam, Rishti Gupta, Satrajit Maitra, Hsin-Jung Lee
