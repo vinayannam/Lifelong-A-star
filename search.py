@@ -145,7 +145,9 @@ def aStarSearch(problem, heuristic):
                 states.append(currentState)
         problem.drawObstacles()
         problem.printPath(states)
+        print('Size of the Layout: ', str(problem.height)+'x'+str(problem.width))
         print('Path Length: ', len(actions))
+        print('Number of obstacles: ', len(problem.obstacles))
         return actions
 
     return main()
@@ -259,6 +261,8 @@ def lifeLongAStarSearch(problem, heuristic):
         problem.drawObstacles()
         problem.printPath(states)
         print('Path Length: ', len(actions))
+        print('Size of the Layout: ', str(problem.height)+'x'+str(problem.width))
+        print('Number of obstacles: ', len(problem.obstacles))
         return actions
     return main()
 
@@ -358,7 +362,9 @@ def dStarSearch(problem, heuristic):
                 states.append(currentState)
         problem.drawObstacles()
         problem.printPath(states)
+        print('Size of the Layout: ', str(problem.height)+'x'+str(problem.width))
         print('Path Length: ', len(actions))
+        print('Number of obstacles: ', len(problem.obstacles))
         return actions
 
     return main()
