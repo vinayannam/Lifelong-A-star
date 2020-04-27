@@ -39,3 +39,9 @@ In this project we implemented the “D* Lite”, Sven Koenig and Maxim Likhache
 
 ## Example usage of the command:
 > python pacman.py -l masterplan -z .5 -p SearchAgent -a fn=astar
+
+## Contributions:
+1. Implementation of A* search, Lifelong planning A* search, D* Lite: Setu Durgesh Vinay Annam, Rishti Gupta
+2. Abstract, Introduction, Implementation comparison, technical approach, using pacman domain in the A* search, Lifelong planning A* search, D* Lite , comparing the performance of lifelong planning A* search and D* Lite sections of Final Report: Satrajit Maitra, Hsin-Jung Lee
+3. Looking for online periodic, journals, and public resources to inspire the brain storm and make contribution the project: Setu Durgesh Vinay Annam, Rishti Gupta, Satrajit Maitra, Hsin-Jung Lee
+4. Communicating through numerous hours phone, Zoom, Whatsup text, voice, and video conversation to hurdle the obstacles, bugs, clarify the misunderstanding and concepts: Setu Durgesh Vinay Annam, Rishti Gupta, Satrajit Maitra, Hsin-Jung Lee
